@@ -1,0 +1,154 @@
+{% load jalali_tags %}
+
+{% load static %}
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سامانه ورود اطلاعات بارش</title>
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/css_reset.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/fontawesome.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/style.css' %}">
+    <script src="{% static 'home/js/chart.min.js' %}"></script>
+
+    <style>
+        @font-face {
+            font-family: 'IranSanse';
+            src: local('IranSanse'),
+            url('{% static "home/fonts/eot/IRANSansWeb.eot" %}') format('eot'),
+            url('{% static "home/fonts/ttf/IRANSansWeb.ttf" %}') format('ttf'),
+            url('{% static "home/fonts/woff/IRANSansWeb.woff" %}') format('woff'),
+            url('{% static "home/fonts/woff2/IRANSansWeb.woff2" %}') format('woff2');
+        }
+    </style>
+</head>
+
+<body style="font-family: 'IranSanse', sans-serif; background-color: cornflowerblue;">
+
+
+<div class="container" style="margin-top: 100px">
+    <div class="row">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="text-align: center; padding: 10px">
+                <div>
+                    <img src="{% static 'home/images/logo-FA.jpg' %}" alt="Logo">
+                </div>
+                <hr>
+                <h2 style="color: white;">
+                    سامانه ورود اطلاعات بارش
+                </h2>
+                <hr>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="text-align: center; padding: 10px; margin-bottom: 20px">
+                <form method="post" autocomplete="off">{% csrf_token %}
+
+                    <label style="margin-bottom: 10px; font-size: larger">
+                        نام ایستگاه
+                    </label>
+                    <br>
+                    {{ form.station }}
+                    <br>
+                    <br>
+                    <label style="margin-bottom: 10px; font-size: larger">
+                        مقدار بارش (به میلی متر)
+                    </label>
+                    <br>
+                    {{ form.value }}
+                    <br>
+                    <br>
+                    <label style="margin-bottom: 10px; font-size: larger">
+                        تاریخ
+                    </label>
+                    <br>
+                    {{ form.submit_date }}
+                    <br>
+                    <br>
+                    {#            <label style="width: 110px;">#}
+                    {#                تاریخ تولد:#}
+                    {#            </label>#}
+                    <input type="submit" class="btn btn-success" style="width: 30%; margin-top: 20px; font-size: larger" value="ثبت">
+                    <a href="{% url 'info_view' %}" class="btn btn-info" style="width: 30%; margin-top: 20px; font-size: larger">
+                        اطلاعات کامل بارش
+                    </a>
+                </form>
+                <hr>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="text-align: center; padding: 10px ;border: 5px solid darkblue; background-color: #e0e0e0; margin-bottom: 30px">
+                <canvas id="myChart" width="400" height="400" style="background-color: #e0e0e0"></canvas>
+                <script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    Chart.defaults.font.size = 16;
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for station in stations%}'{{ station }}', {% endfor %}],
+                            datasets: [{
+                                label: 'مقدار میانگین بارش',
+                                data: [{{rainfall_data_ave}}],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.7)',
+                                    'rgba(54, 162, 235, 0.7)',
+                                    'rgba(255, 206, 86, 0.7)',
+                                    'rgba(75, 192, 192, 0.7)',
+                                    'rgba(153, 102, 255, 0.7)',
+                                    'rgba(255, 255, 50, 0.7)',
+                                    'rgba(20, 159, 64, 0.7)',
+                                    'rgba(250, 100, 64, 0.7)',
+                                    'rgba(50, 100, 255, 0.7)',
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 255, 50, 1)',
+                                    'rgba(20, 159, 64, 1)',
+                                    'rgba(250, 100, 64, 1)',
+                                    'rgba(50, 100, 255, 1)',
+                                ],
+                                borderWidth: 5
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                </script>
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+<script src="{% static 'home/js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'home/js/bootstrap.bundle.js' %}"></script>
+<script src="{% static 'home/js/fontawesome.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
+<script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+
+</html>
